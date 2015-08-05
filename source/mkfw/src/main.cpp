@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
         //parser.clearPositionalArguments();
         parser.addHelpOption();
-        parser.addPositionalArgument("unpack", "unpack your APP.", "unpack [unpackage_options]");
+        parser.addPositionalArgument("unpack", "unpack your firmware.", "unpack [unpackage_options]");
 
         QCommandLineOption sourceFileOption(QStringList() << "s" << "source-file",
                                            "Select a source file <source file>.",
@@ -58,7 +58,9 @@ int main(int argc, char *argv[])
         parser.setApplicationDescription("mkfw helper\n\n"
                                          "ex. mkfw -m <model> -v [version] -s <file> -d <folder>\n"
                                          "ex. mkfw -m <model> -v [version] -s <file>\n"
-                                         "(If destination is not selected, mkfw will use current directory for destination.)");
+                                         "(If destination is not selected, mkfw will use current directory for destination.)\n\n"
+                                         "For unpack help:\n"
+                                         "mkfw unpack --help");
         parser.addHelpOption();
 
         QCommandLineOption modelNameOption(QStringList() << "m" << "model-name",
@@ -161,7 +163,7 @@ void packageFile(QFile &srcFile,
     QString versionInHeader = version + currentDate.toString(".MMdd.yyyy");
     str.replace(0x4C/*76*/, versionInHeader.size(), versionInHeader.toLocal8Bit());
 
-    QString outFileName("DLINK_[%1]_[%2]([%3].%4)");
+    QString outFileName("DLINK_%1_%2(%3.%4)");
 
     QFile outFile(destFolder.absolutePath() + "/" +
                   outFileName
@@ -200,8 +202,8 @@ void packageFile(QFile &srcFile,
 
     qDebug() << "\n"
              << "NAS type:              " << modelName << "\n"
-             << "firmware versioin1:    " << version << "\n"
-             << "firmware versioin2:	" << version.section('.', 0, 1) << "\n"
+             << "firmware version1:     " << version << "\n"
+             << "firmware version2:     " << version.section('.', 0, 1) << "\n"
              << "firmware build date:   " << currentDate.toString("yyyy/MM/dd") << "\n"
              << "\n"
              << "firmware checksum:     " << checkSum << "\n"
@@ -303,8 +305,8 @@ void showInfo(QString sourceFile) {
 
     qDebug() << "\n"
              << "NAS type:              " << header.modelName << "\n"
-             << "firmware versioin1:    " << header.version.section('.', 0, 2) << "\n"
-             << "firmware versioin2:	" << header.version.section('.', 0, 1) << "\n"
+             << "firmware version1:     " << header.version.section('.', 0, 2) << "\n"
+             << "firmware version2:     " << header.version.section('.', 0, 1) << "\n"
              << "firmware build date:   " << date.toString("yyyy/MM/dd") << "\n"
              << "\n"
              << "firmware checksum:     " << header.checksum << "\n"
